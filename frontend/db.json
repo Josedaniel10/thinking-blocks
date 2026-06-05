@@ -1,0 +1,44 @@
+{
+  "thoughts": [
+    {
+      "id": "01",
+      "text": "Este es un ejemplo",
+      "createdAt": "hoy"
+    },
+    {
+      "id": "02",
+      "text": "Este es un ejemplo",
+      "createdAt": "hoy"
+    },
+    {
+      "id": "03",
+      "text": "Este es un ejemplo",
+      "createdAt": "hoy"
+    },
+    {
+      "id": "04",
+      "text": "Este es un ejemplo",
+      "createdAt": "hoy"
+    },
+    {
+      "id": "05",
+      "text": "Este es un ejemplo",
+      "createdAt": "hoy"
+    },
+    {
+      "id": "06",
+      "text": "Este es un ejemplo",
+      "createdAt": "hoy"
+    },
+    {
+      "id": "07",
+      "text": "Este es un ejemplo",
+      "createdAt": "hoy"
+    },
+    {
+      "id": "08",
+      "text": "Este es un ejemplo",
+      "createdAt": "hoy"
+    }
+  ]
+}
