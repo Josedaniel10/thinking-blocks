@@ -1,5 +1,5 @@
-import SpaceBlock from "../models/SpaceBlock"
-import asyncHandler from "../utils/asyncHandler"
+import SpaceBlock from "../models/SpaceBlock.js"
+import asyncHandler from "../utils/asyncHandler.js"
 
 export const createSpaceBlock = asyncHandler(async (req, res) => {
   const { title, icon, color } = req.body
@@ -32,7 +32,7 @@ export const getSpaceBlockById = asyncHandler(async (req, res) => {
   const { id } = req.params
 
   const spaceBlock = await SpaceBlock.findOne({
-    id,
+    _id: id,
     isArchived: false,
   })
 
@@ -54,12 +54,12 @@ export const updateSpaceBlock = asyncHandler(async (req, res) => {
 
   const updatedSpaceBlock = await SpaceBlock.findOneAndUpdate(
     {
-      id: id,
+      _id: id,
       isArchived: false,
     },
     req.body,
     {
-      new: true,
+      returnDocument: "after",
       runValidators: true,
     },
   )
@@ -82,14 +82,14 @@ export const archiveSpaceBlock = asyncHandler(async (req, res) => {
 
   const archivedSpaceBlock = await SpaceBlock.findOneAndUpdate(
     {
-      id,
+      _id: id,
       isArchived: false,
     },
     {
       isArchived: true,
     },
     {
-      new: true,
+      returnDocument: "after",
     },
   )
 

@@ -45,5 +45,9 @@ const thinkingBlockSchema = new mongoose.Schema(
   },
 )
 
+thinkingBlockSchema.index({
+  spaceBlockId: 1,
+  isArchived: 1
+})
 
 export default mongoose.model("ThinkingBlock", thinkingBlockSchema)

@@ -5,23 +5,29 @@ import {
   updateThinkingBlock,
   archiveThinkingBlock,
   duplicateThinkingBlock,
-} from "../controllers/thinkingBlock.controller"
+} from "../controllers/thinkingBlock.controller.js"
+import validateRequest from "../middlewares/validateRequest.js"
+import {
+  createThinkingBlockSchema,
+  updateThinkingBlockSchema,
+} from "../validators/thinkingBlock.validator.js"
+
 const thinkingBlockRouter = express.Router()
 
-thinkingBlockRouter.post("/",
-    createThinkingBlock
+thinkingBlockRouter.post(
+  "/",
+  validateRequest(createThinkingBlockSchema),
+  createThinkingBlock,
 )
-thinkingBlockRouter.get("/:id/",
-    getThinkingBlockById
+thinkingBlockRouter.get("/:id", 
+  getThinkingBlockById
 )
-thinkingBlockRouter.patch("/:id",
-    updateThinkingBlock
+thinkingBlockRouter.patch(
+  "/:id",
+  validateRequest(updateThinkingBlockSchema),
+  updateThinkingBlock,
 )
-thinkingBlockRouter.delete("/:id",
-    archiveThinkingBlock
-)
-thinkingBlockRouter.post("/:id/duplicate",
-    duplicateThinkingBlock
-)
+thinkingBlockRouter.delete("/:id", archiveThinkingBlock)
+thinkingBlockRouter.post("/:id/duplicate", duplicateThinkingBlock)
 
 export default thinkingBlockRouter

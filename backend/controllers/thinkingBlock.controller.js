@@ -1,8 +1,19 @@
-import ThinkingBlock from "../models/ThinkingBlock"
-import CanvasElement from "../models/CanvasElement"
-import asyncHandler from "../utils/asyncHandler"
+import ThinkingBlock from "../models/ThinkingBlock.js"
+import SpaceBlock from "../models/SpaceBlock.js"
+import CanvasElement from "../models/CanvasElement.js"
+import asyncHandler from "../utils/asyncHandler.js"
 
 export const createThinkingBlock = asyncHandler(async (req, res) => {
+  const spaceBlock = await SpaceBlock.findById(req.body.spaceBlockId)
+
+  if (!spaceBlock) {
+    res.status(400).json({
+      success: false,
+      message: "The SpaceBlock assigned to the ThinkingBlock does not exist",
+    })
+    return
+  }
+
   const thinkingBlock = await ThinkingBlock.create(req.body)
 
   res.status(201).json({
@@ -13,7 +24,7 @@ export const createThinkingBlock = asyncHandler(async (req, res) => {
 
 export const getThinkingBlockById = asyncHandler(async (req, res) => {
   const thinkingBlock = await ThinkingBlock.findOne({
-    id: req.params.id,
+    _id: req.params.id,
     isArchived: false,
   })
 
@@ -38,7 +49,7 @@ export const updateThinkingBlock = asyncHandler(async (req, res) => {
     },
     req.body,
     {
-      new: true,
+      returnDocument: "after",
       runValidators: true,
     },
   )
@@ -66,7 +77,7 @@ export const archiveThinkingBlock = asyncHandler(async (req, res) => {
       isArchived: true,
     },
     {
-      new: true,
+      returnDocument: "after",
     },
   )
 
@@ -100,7 +111,7 @@ export const getThinkingBlocksBySpaceBlock = asyncHandler(async (req, res) => {
 
 export const duplicateThinkingBlock = asyncHandler(async (req, res) => {
   const original = await ThinkingBlock.findOne({
-    id: req.params.id,
+    _id: req.params.id,
     isArchived: false,
   })
 
@@ -117,6 +128,7 @@ export const duplicateThinkingBlock = asyncHandler(async (req, res) => {
     spaceBlockId: original.spaceBlockId,
   })
 
+
   const elements = await CanvasElement.find({
     thinkingBlockId: original._id,
     isArchived: false,
@@ -124,7 +136,7 @@ export const duplicateThinkingBlock = asyncHandler(async (req, res) => {
 
   if (elements.length > 0) {
     const duplicatedElements = elements.map((element) => ({
-      thinkingBlockId: duplicate.id,
+      thinkingBlockId: duplicate._id,
       type: element.type,
       bounds: element.bounds,
       data: element.data,
@@ -138,4 +150,3 @@ export const duplicateThinkingBlock = asyncHandler(async (req, res) => {
     data: duplicate,
   })
 })
-

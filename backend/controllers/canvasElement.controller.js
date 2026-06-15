@@ -1,7 +1,17 @@
-import CanvasElement from "../models/CanvasElement"
-import asyncHandler from "../utils/asyncHandler"
+import CanvasElement from "../models/CanvasElement.js"
+import ThinkingBlock from "../models/ThinkingBlock.js"
+import asyncHandler from "../utils/asyncHandler.js"
 
 export const createCanvasElement = asyncHandler(async (req, res) => {
+  const thinkingBlock = await ThinkingBlock.findById(req.body.thinkingBlockId)
+
+  if(!thinkingBlock) {
+    res.status(400).json({
+      success: false,
+      message: "This ThinkingBlock does not exist"
+    })
+    return
+  }
   const canvasElement = await CanvasElement.create(req.body)
 
   res.status(201).json({
@@ -12,7 +22,7 @@ export const createCanvasElement = asyncHandler(async (req, res) => {
 
 export const getCanvasElementById = asyncHandler(async (req, res) => {
   const canvasElement = await CanvasElement.findOne({
-    id: req.params.id,
+    _id: req.params.id,
     isArchived: false,
   })
 
@@ -45,12 +55,12 @@ export const getElementsByThinkingBlock = asyncHandler(async (req, res) => {
 export const updateCanvasElement = asyncHandler(async (req, res) => {
   const canvasElement = await CanvasElement.findOneAndUpdate(
     {
-      id: req.params.id,
+      _id: req.params.id,
       isArchived: false,
     },
     req.body,
     {
-      new: true,
+      returnDocument: "after",
       runValidators: true,
     },
   )
@@ -78,7 +88,7 @@ export const archiveCanvasElement = asyncHandler(async (req, res) => {
       isArchived: true,
     },
     {
-      new: true,
+      returnDocument: "after",
     },
   )
 

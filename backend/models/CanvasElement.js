@@ -41,7 +41,7 @@ const canvasElementSchema = new mongoose.Schema(
       },
     },
     data: {
-      type: mongoose.Schema.Types.Mided,
+      type: mongoose.Schema.Types.Mixed,
       default: {},
     },
     isArchived: {
@@ -55,5 +55,10 @@ const canvasElementSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   },
 )
+
+canvasElementSchema.index({
+  thinkingBlockId: 1,
+  isArchived: 1,
+})
 
 export default mongoose.model("CanvasElement", canvasElementSchema)
