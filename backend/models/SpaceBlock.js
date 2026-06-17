@@ -1,4 +1,3 @@
-import { number } from "joi"
 import mongoose from "mongoose"
 
 const iconSchema = new mongoose.Schema(
@@ -31,6 +30,7 @@ const spaceBlockSchema = new mongoose.Schema(
     description: {
       type: String,
       default: "",
+      maxLength: 1000
     },
     color: {
       type: String,
