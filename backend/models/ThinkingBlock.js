@@ -5,11 +5,11 @@ const iconSchema = new mongoose.Schema(
     type: {
       type: String,
       enum: ["emoji", "lucide", "image"],
-      required: true,
+      default: "emoji",
     },
     value: {
       type: String,
-      required: true,
+      default: "💡",
     },
   },
   { _id: false },
@@ -27,15 +27,42 @@ const thinkingBlockSchema = new mongoose.Schema(
       type: iconSchema,
       required: true,
     },
+    description: {
+      type: String,
+      default: "",
+      maxLength: 1000
+    },
     spaceBlockId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "SpaceBlock",
-      required: true,
       index: true,
+      default: null,
+    },
+    thumbnail: {
+      type: String,
+      default: null,
+    },
+    position: {
+      x: {
+        type: Number,
+        default: 0,
+      },
+      y: {
+        type: Number,
+        default: 0,
+      },
+    },
+    isFavorite: {
+      type: Boolean,
+      default: false,
     },
     isArchived: {
       type: Boolean,
       default: false,
+    },
+    lastOpenedAt: {
+      type: Date,
+      default: Date.now,
     },
   },
   {
@@ -47,7 +74,15 @@ const thinkingBlockSchema = new mongoose.Schema(
 
 thinkingBlockSchema.index({
   spaceBlockId: 1,
-  isArchived: 1
+  isArchived: 1,
 })
+
+thinkingBlockSchema.index({
+  updatedAt: -1
+});
+
+thinkingBlockSchema.index({
+  lastOpenedAt: -1
+});
 
 export default mongoose.model("ThinkingBlock", thinkingBlockSchema)

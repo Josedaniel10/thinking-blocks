@@ -44,6 +44,10 @@ const canvasElementSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.Mixed,
       default: {},
     },
+    version: {
+      type: Number,
+      default: 1,
+    },
     isArchived: {
       type: Boolean,
       default: false,
