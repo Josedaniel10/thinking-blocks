@@ -1,13 +1,36 @@
 import SpaceBlock from "../models/SpaceBlock.js"
 import asyncHandler from "../utils/asyncHandler.js"
+import { validateSpaceBlockExists } from "../utils/validateExists.js"
 
 export const createSpaceBlock = asyncHandler(async (req, res) => {
-  const { title, icon, color } = req.body
+  const {
+    title,
+    description,
+    icon,
+    color,
+    parentSpaceBlockId,
+    thumbnail,
+    position,
+  } = req.body
+
+  if (
+    parentSpaceBlockId &&
+    !(await validateSpaceBlockExists(parentSpaceBlockId))
+  ) {
+    return res.status(400).json({
+      success: false,
+      message: "The assigned parent SpaceBlock does not exist",
+    })
+  }
 
   const spaceBlock = await SpaceBlock.create({
     title,
+    description,
     icon,
     color,
+    parentSpaceBlockId,
+    thumbnail,
+    position,
   })
 
   res.status(201).json({
@@ -43,6 +66,9 @@ export const getSpaceBlockById = asyncHandler(async (req, res) => {
     })
   }
 
+  spaceBlock.lastOpenedAt = Date.now()
+  await spaceBlock.save()
+
   return res.status(200).json({
     success: true,
     data: spaceBlock,
@@ -51,6 +77,16 @@ export const getSpaceBlockById = asyncHandler(async (req, res) => {
 
 export const updateSpaceBlock = asyncHandler(async (req, res) => {
   const { id } = req.params
+
+  if (
+    req.body.parentSpaceBlockId &&
+    !(await validateSpaceBlockExists(req.body.parentSpaceBlockId))
+  ) {
+    return res.status(400).json({
+      success: false,
+      message: "The assigned SpaceBlock does not exist",
+    })
+  }
 
   const updatedSpaceBlock = await SpaceBlock.findOneAndUpdate(
     {

@@ -1,37 +1,51 @@
 import Joi from "joi";
+import { iconSchema } from "./icon.validator.js";
+import { positionSchema } from "./position.validator.js";
 
 export const createThinkingBlockSchema = Joi.object({
   title: Joi.string()
     .trim()
-    .min(1)
     .max(80)
     .required(),
 
-  icon: Joi.object({
-    type: Joi.string()
-      .valid("emoji", "ludcie", "image")
-      .required(),
+  description: Joi.string()
+    .max(1000)
+    .allow(""),
 
-    value: Joi.string()
-      .required()
-  }).required(),
+  icon: iconSchema.required(),
 
   spaceBlockId: Joi.string()
     .hex()
     .length(24)
-    .required()
+    .allow(null),
+
+  thumbnail: Joi.string()
+    .allow(null, ""),
+
+  position: positionSchema,
 });
 
 export const updateThinkingBlockSchema = Joi.object({
   title: Joi.string()
     .trim()
-    .min(1)
     .max(80),
 
-  icon: Joi.object({
-    type: Joi.string()
-      .valid("emoji", "lucide", "image"),
+  description: Joi.string()
+    .max(1000)
+    .allow(""),
 
-    value: Joi.string()
-  }).min(1)
-}).min(1);
+  icon: iconSchema,
+
+  spaceBlockId: Joi.string()
+    .hex()
+    .length(24)
+    .allow(null),
+
+  thumbnail: Joi.string()
+    .allow(null, ""),
+
+  position: positionSchema,
+
+  isFavorite: Joi.boolean(),
+})
+.min(1);

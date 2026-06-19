@@ -1,26 +1,58 @@
 import Joi from "joi"
+import { iconSchema } from "./icon.validator.js"
+import { positionSchema } from "./position.validator.js"
 
 export const createSpaceBlockSchema = Joi.object({
-  title: Joi.string().trim().min(1).max(80).required(),
-  icon: Joi.object({
-    type: Joi.string().valid("emoji", "lucide", "image").required(),
-
-    value: Joi.string().max(50).required(),
-  }).required(),
-  color: Joi.string()
-    .pattern(/^#([A-Fa-f0-9]{6})$/)
+  title: Joi.string()
+    .trim()
+    .max(80)
     .required(),
-})
+
+  description: Joi.string()
+    .max(1000)
+    .allow(""),
+
+  icon: iconSchema.required(),
+
+  color: Joi.string()
+    .pattern(/^#[0-9A-Fa-f]{6}$/)
+    .required(),
+
+  parentSpaceBlockId: Joi.string()
+    .hex()
+    .length(24)
+    .allow(null),
+
+  thumbnail: Joi.string()
+    .allow(null, ""),
+
+  position: positionSchema,
+});
 
 export const updateSpaceBlockSchema = Joi.object({
-  title: Joi.string().trim().min(1).max(80),
+  title: Joi.string()
+    .trim()
+    .max(80),
 
-  icon: Joi.object({
-    type: Joi.string().valid("emoji", "lucide", "image"),
+  description: Joi.string()
+    .max(1000)
+    .allow(""),
 
-    value: Joi.string().max(50),
-  }).min(1),
+  icon: iconSchema,
 
-  color: Joi.string().pattern(/^#([A-Fa-f0-9]{6})$/),
-}).min(1)
+  color: Joi.string()
+    .pattern(/^#[0-9A-Fa-f]{6}$/),
 
+  parentSpaceBlockId: Joi.string()
+    .hex()
+    .length(24)
+    .allow(null),
+
+  thumbnail: Joi.string()
+    .allow(null, ""),
+
+  position: positionSchema,
+
+  isFavorite: Joi.boolean(),
+})
+.min(1);

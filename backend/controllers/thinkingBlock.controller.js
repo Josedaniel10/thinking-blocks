@@ -2,19 +2,27 @@ import ThinkingBlock from "../models/ThinkingBlock.js"
 import SpaceBlock from "../models/SpaceBlock.js"
 import CanvasElement from "../models/CanvasElement.js"
 import asyncHandler from "../utils/asyncHandler.js"
+import { validateSpaceBlockExists } from "../utils/validateExists.js"
 
 export const createThinkingBlock = asyncHandler(async (req, res) => {
-  const spaceBlock = await SpaceBlock.findById(req.body.spaceBlockId)
+  const { title, description, icon, spaceBlockId, thumbnail, position } =
+    req.body
 
-  if (!spaceBlock) {
-    res.status(400).json({
+  if (spaceBlockId && !(await validateSpaceBlockExists(spaceBlockId))) {
+    return res.status(400).json({
       success: false,
-      message: "The SpaceBlock assigned to the ThinkingBlock does not exist",
+      message: "The assigned SpaceBlock does not exist",
     })
-    return
   }
 
-  const thinkingBlock = await ThinkingBlock.create(req.body)
+  const thinkingBlock = await ThinkingBlock.create({
+    title,
+    description,
+    icon,
+    spaceBlockId,
+    thumbnail,
+    position,
+  })
 
   res.status(201).json({
     success: true,
@@ -35,6 +43,9 @@ export const getThinkingBlockById = asyncHandler(async (req, res) => {
     })
   }
 
+  thinkingBlock.lastOpenedAt = Date.now()
+  await thinkingBlock.save()
+
   res.status(200).json({
     success: true,
     data: thinkingBlock,
@@ -42,6 +53,16 @@ export const getThinkingBlockById = asyncHandler(async (req, res) => {
 })
 
 export const updateThinkingBlock = asyncHandler(async (req, res) => {
+  if (
+    req.body.spaceBlockId &&
+    !(await validateSpaceBlockExists(req.body.spaceBlockId))
+  ) {
+    return res.status(400).json({
+      success: false,
+      message: "The assigned SpaceBlock does not exist",
+    })
+  }
+
   const thinkingBlock = await ThinkingBlock.findOneAndUpdate(
     {
       _id: req.params.id,
@@ -124,10 +145,12 @@ export const duplicateThinkingBlock = asyncHandler(async (req, res) => {
 
   const duplicate = await ThinkingBlock.create({
     title: `${original.title} Copy`,
+    description: original.description,
     icon: original.icon,
     spaceBlockId: original.spaceBlockId,
+    thumbnail: original.thumbnail,
+    position: original.position,
   })
-
 
   const elements = await CanvasElement.find({
     thinkingBlockId: original._id,
