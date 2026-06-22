@@ -139,9 +139,14 @@ thinkingBlockRouter.get("/:id", getThinkingBlockById)
  *                     enum: [emoji, lucide, image]
  *                   value:
  *                     type: string
+ *               spaceBlockId:
+ *                 type: string
+ *                 description: ID del SpaceBlock padre (opcional). Debe existir si se proporciona.
  *     responses:
  *       200:
  *         description: ThinkingBlock actualizado exitosamente
+ *       400:
+ *         description: El SpaceBlock asignado no existe
  *       404:
  *         description: ThinkingBlock no encontrado
  */

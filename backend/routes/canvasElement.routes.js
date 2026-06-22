@@ -121,7 +121,7 @@ canvasElementRouter.get("/:id/", getCanvasElementById)
  * /canvas-element/{id}:
  *   patch:
  *     summary: Actualizar un CanvasElement
- *     description: Actualiza la información de un CanvasElement existente (posición, tamaño, datos)
+ *     description: Actualiza la información de un CanvasElement existente. Soporta actualizaciones parciales - solo se actualizan los campos proporcionados (merge profundo para objetos anidados como bounds).
  *     tags:
  *       - CanvasElements
  *     parameters:
@@ -143,6 +143,7 @@ canvasElementRouter.get("/:id/", getCanvasElementById)
  *                 enum: [text, image, video, file, table, drawing, thinking_block_reference]
  *               bounds:
  *                 type: object
+ *                 description: Posición y dimensiones. Cada propiedad es opcional y se actualiza independientemente.
  *                 properties:
  *                   x:
  *                     type: number
@@ -154,9 +155,14 @@ canvasElementRouter.get("/:id/", getCanvasElementById)
  *                     type: number
  *               data:
  *                 type: object
+ *               thinkingBlockId:
+ *                 type: string
+ *                 description: ID del ThinkingBlock padre (opcional). Debe existir si se proporciona.
  *     responses:
  *       200:
  *         description: CanvasElement actualizado exitosamente
+ *       400:
+ *         description: El ThinkingBlock asignado no existe
  *       404:
  *         description: CanvasElement no encontrado
  */

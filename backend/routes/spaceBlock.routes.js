@@ -19,7 +19,7 @@ const spaceBlockRouter = express.Router()
  * /space-blocks:
  *   post:
  *     summary: Crear un nuevo SpaceBlock
- *     description: Crea un nuevo espacio (SpaceBlock) con título, icono y color
+ *     description: Crea un nuevo espacio (SpaceBlock) con título, icono y color. Opcionalmente puede asignarse a otro SpaceBlock como padre.
  *     tags:
  *       - SpaceBlocks
  *     requestBody:
@@ -53,6 +53,9 @@ const spaceBlockRouter = express.Router()
  *                 type: string
  *                 default: "#7C3AED"
  *                 description: Color del SpaceBlock en formato hexadecimal
+ *               parentSpaceBlockId:
+ *                 type: string
+ *                 description: ID del SpaceBlock padre (opcional). Debe existir si se proporciona.
  *     responses:
  *       201:
  *         description: SpaceBlock creado exitosamente
@@ -66,7 +69,7 @@ const spaceBlockRouter = express.Router()
  *                 data:
  *                   type: object
  *       400:
- *         description: Datos inválidos
+ *         description: Datos inválidos o el SpaceBlock padre asignado no existe
  */
 spaceBlockRouter.post(
   "/",
@@ -168,6 +171,9 @@ spaceBlockRouter.get("/:id", getSpaceBlockById)
  *                     type: string
  *               color:
  *                 type: string
+ *               parentSpaceBlockId:
+ *                 type: string
+ *                 description: ID del SpaceBlock padre (opcional). Debe existir si se proporciona.
  *     responses:
  *       200:
  *         description: SpaceBlock actualizado exitosamente
@@ -180,6 +186,8 @@ spaceBlockRouter.get("/:id", getSpaceBlockById)
  *                   type: boolean
  *                 data:
  *                   type: object
+ *       400:
+ *         description: El SpaceBlock padre asignado no existe
  *       404:
  *         description: SpaceBlock no encontrado
  */

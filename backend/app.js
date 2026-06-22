@@ -3,6 +3,7 @@ import errorHandler from "./middlewares/errorHandler.js"
 import spaceBlockRouter from "./routes/spaceBlock.routes.js"
 import thinkingBlockRouter from "./routes/thinkingBlock.routes.js"
 import canvasElementRouter from "./routes/canvasElement.routes.js"
+import homeRouter from "./routes/home.routes.js"
 import cors from "cors"
 import { getThinkingBlocksBySpaceBlock } from "./controllers/thinkingBlock.controller.js"
 import { getElementsByThinkingBlock } from "./controllers/canvasElement.controller.js"
@@ -17,6 +18,7 @@ app.use(cors())
 app.use("/api/space-blocks", spaceBlockRouter)
 app.use("/api/thinking-blocks", thinkingBlockRouter)
 app.use("/api/canvas-element", canvasElementRouter)
+app.use('/api/home', homeRouter)
 
 /**
  * @swagger

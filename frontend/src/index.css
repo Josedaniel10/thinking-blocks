@@ -1,11 +1,1 @@
 @import "tailwindcss";
-
-@layer base {
-  * {
-    @apply p-0 m-0;
-  }
-
-  body {
-    @apply w-screen h-screen bg-gradient-to-br from-white to-blue-200;
-  }
-}
