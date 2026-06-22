@@ -1,5 +1,6 @@
 import SpaceBlock from "../models/SpaceBlock.js"
 import asyncHandler from "../utils/asyncHandler.js"
+import { updateLastOpened } from "../utils/updateLastOpened.js"
 import { validateSpaceBlockExists } from "../utils/validateExists.js"
 
 export const createSpaceBlock = asyncHandler(async (req, res) => {
@@ -65,9 +66,6 @@ export const getSpaceBlockById = asyncHandler(async (req, res) => {
       message: "SpaceBlock not found",
     })
   }
-
-  spaceBlock.lastOpenedAt = Date.now()
-  await spaceBlock.save()
 
   return res.status(200).json({
     success: true,
@@ -139,5 +137,24 @@ export const archiveSpaceBlock = asyncHandler(async (req, res) => {
   return res.status(200).json({
     success: true,
     message: "SpaceBlock archived successfully",
+  })
+})
+
+export const openSpaceBlock = asyncHandler(async (req, res) => {
+  const spaceBlock = await updateLastOpened(SpaceBlock, req.params.id)
+
+  if (!spaceBlock) {
+    return res.status(404).json({
+      success: false,
+      message: "SpaceBlock not found",
+    })
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "SpaceBlock opened successfully",
+    data: {
+      lastOpenedAt: spaceBlock.lastOpenedAt,
+    },
   })
 })

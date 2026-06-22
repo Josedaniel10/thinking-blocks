@@ -3,6 +3,7 @@ import SpaceBlock from "../models/SpaceBlock.js"
 import CanvasElement from "../models/CanvasElement.js"
 import asyncHandler from "../utils/asyncHandler.js"
 import { validateSpaceBlockExists } from "../utils/validateExists.js"
+import { updateLastOpened } from "../utils/updateLastOpened.js"
 
 export const createThinkingBlock = asyncHandler(async (req, res) => {
   const { title, description, icon, spaceBlockId, thumbnail, position } =
@@ -42,9 +43,6 @@ export const getThinkingBlockById = asyncHandler(async (req, res) => {
       message: "ThinkingBlock not found",
     })
   }
-
-  thinkingBlock.lastOpenedAt = Date.now()
-  await thinkingBlock.save()
 
   res.status(200).json({
     success: true,
@@ -171,5 +169,24 @@ export const duplicateThinkingBlock = asyncHandler(async (req, res) => {
   res.status(201).json({
     success: true,
     data: duplicate,
+  })
+})
+
+export const openThinkingBlock = asyncHandler(async (req, res) => {
+  const thinkingBlock = await updateLastOpened(ThinkingBlock, req.params.id)
+
+  if (!thinkingBlock) {
+    return res.status(404).json({
+      success: false,
+      message: "ThinkingBlock not found",
+    })
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "ThinkingBlock opened successfully",
+    data: {
+      lastOpenedAt: thinkingBlock.lastOpenedAt,
+    },
   })
 })

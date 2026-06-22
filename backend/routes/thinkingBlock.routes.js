@@ -5,6 +5,7 @@ import {
   updateThinkingBlock,
   archiveThinkingBlock,
   duplicateThinkingBlock,
+  openThinkingBlock,
 } from "../controllers/thinkingBlock.controller.js"
 import validateRequest from "../middlewares/validateRequest.js"
 import {
@@ -210,5 +211,28 @@ thinkingBlockRouter.delete("/:id", archiveThinkingBlock)
  *         description: ThinkingBlock no encontrado
  */
 thinkingBlockRouter.post("/:id/duplicate", duplicateThinkingBlock)
+
+/**
+ * @swagger
+ * /thinking-blocks/{id}/open:
+ *   patch:
+ *     summary: Restaurar (desarchivar) un ThinkingBlock
+ *     description: Marca un ThinkingBlock como no archivado, restaurando su acceso
+ *     tags:
+ *       - ThinkingBlocks
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del ThinkingBlock a restaurar
+ *     responses:
+ *       200:
+ *         description: ThinkingBlock restaurado exitosamente
+ *       404:
+ *         description: ThinkingBlock no encontrado
+ */
+thinkingBlockRouter.patch("/:id/open", openThinkingBlock)
 
 export default thinkingBlockRouter

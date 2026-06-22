@@ -5,6 +5,7 @@ import {
   getSpaceBlockById,
   updateSpaceBlock,
   archiveSpaceBlock,
+  openSpaceBlock,
 } from "../controllers/spaceBlock.controller.js"
 import validateRequest from "../middlewares/validateRequest.js"
 import {
@@ -218,6 +219,50 @@ spaceBlockRouter.patch(
  *       404:
  *         description: SpaceBlock no encontrado
  */
+/**
+ * @swagger
+ * /space-blocks/{id}:
+ *   delete:
+ *     summary: Archivar un SpaceBlock
+ *     description: Marca un SpaceBlock como archivado (soft delete)
+ *     tags:
+ *       - SpaceBlocks
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del SpaceBlock a archivar
+ *     responses:
+ *       200:
+ *         description: SpaceBlock archivado exitosamente
+ *       404:
+ *         description: SpaceBlock no encontrado
+ */
 spaceBlockRouter.delete("/:id", archiveSpaceBlock)
+
+/**
+ * @swagger
+ * /space-blocks/{id}/open:
+ *   patch:
+ *     summary: Restaurar (desarchivar) un SpaceBlock
+ *     description: Marca un SpaceBlock como no archivado, restaurando su acceso
+ *     tags:
+ *       - SpaceBlocks
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del SpaceBlock a restaurar
+ *     responses:
+ *       200:
+ *         description: SpaceBlock restaurado exitosamente
+ *       404:
+ *         description: SpaceBlock no encontrado
+ */
+spaceBlockRouter.patch("/:id/open", openSpaceBlock)
 
 export default spaceBlockRouter
