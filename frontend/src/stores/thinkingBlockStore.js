@@ -6,11 +6,12 @@ import {
   getThinkingBlock,
   getThinkingBlocksBySpaceBlock,
   updateThinkingBlock,
+  openThinkingBlock,
 } from "../api/thinkingBlocks"
 
-export const useThinkingBlockStore = create((set, get) => ({
-  // State
+import { executeAction } from "./helpers/createCrudStore"
 
+export const useThinkingBlockStore = create((set, get) => ({
   thinkingBlock: null,
 
   thinkingBlocks: [],
@@ -18,8 +19,6 @@ export const useThinkingBlockStore = create((set, get) => ({
   loading: false,
 
   error: null,
-
-  // Actions
 
   clearError: () => {
     set({ error: null })
@@ -29,201 +28,88 @@ export const useThinkingBlockStore = create((set, get) => ({
     set({ thinkingBlock: null })
   },
 
-  // GET ONE
-
   fetchThinkingBlock: async (id) => {
-    try {
-      set({
-        loading: true,
-        error: null,
-      })
-
-      const thinkingBlock = await getThinkingBlock(id)
-
-      set({
-        thinkingBlock,
-      })
-
-      return thinkingBlock
-    } catch (error) {
-      set({
-        error: error.message,
-      })
-
-      throw error
-    } finally {
-      set({
-        loading: false,
-      })
-    }
+    executeAction({
+      set,
+      action: () => getThinkingBlock(id),
+      onSuccess: (thinkingBlock) =>
+        set({
+          thinkingBlock,
+        }),
+    })
   },
-
-  // GET BY SPACE BLOCK
 
   fetchThinkingBlocks: async (spaceBlockId) => {
-    try {
-      set({
-        loading: true,
-        error: null,
-      })
-
-      const thinkingBlocks =
-        await getThinkingBlocksBySpaceBlock(spaceBlockId)
-
-      set({
-        thinkingBlocks,
-      })
-
-      return thinkingBlocks
-    } catch (error) {
-      set({
-        error: error.message,
-      })
-
-      throw error
-    } finally {
-      set({
-        loading: false,
-      })
-    }
+    return executeAction({
+      set,
+      action: () => getThinkingBlocksBySpaceBlock(spaceBlockId),
+      onSuccess: (thinkingBlocks) =>
+        set({
+          thinkingBlocks,
+        }),
+    })
   },
-
-  // CREATE
 
   createThinkingBlock: async (payload) => {
-    try {
-      set({
-        loading: true,
-        error: null,
-      })
-
-      const newThinkingBlock =
-        await createThinkingBlock(payload)
-
-      set((state) => ({
-        thinkingBlocks: [
-          ...state.thinkingBlocks,
-          newThinkingBlock,
-        ],
-      }))
-
-      return newThinkingBlock
-    } catch (error) {
-      set({
-        error: error.message,
-      })
-
-      throw error
-    } finally {
-      set({
-        loading: false,
-      })
-    }
+    return executeAction({
+      set,
+      action: () => createThinkingBlock(payload),
+      onSuccess: (newThinkingBlock) =>
+        set((state) => ({
+          thinkingBlocks: [...state.thinkingBlocks, newThinkingBlock],
+        })),
+    })
   },
-
-  // UPDATE
 
   updateThinkingBlock: async (id, payload) => {
-    try {
-      set({
-        loading: true,
-        error: null,
-      })
+    return executeAction({
+      set,
+      action: () => updateThinkingBlock(id, payload),
+      onSuccess: (updatedThinkingBlock) =>
+        set((state) => ({
+          thinkingBlocks: state.thinkingBlocks.map((block) =>
+            block._id === id ? updatedThinkingBlock : block,
+          ),
 
-      const updatedThinkingBlock =
-        await updateThinkingBlock(id, payload)
-
-      set((state) => ({
-        thinkingBlocks: state.thinkingBlocks.map((block) =>
-          block._id === id
-            ? updatedThinkingBlock
-            : block
-        ),
-
-        thinkingBlock:
-          state.thinkingBlock?._id === id
-            ? updatedThinkingBlock
-            : state.thinkingBlock,
-      }))
-
-      return updatedThinkingBlock
-    } catch (error) {
-      set({
-        error: error.message,
-      })
-
-      throw error
-    } finally {
-      set({
-        loading: false,
-      })
-    }
+          thinkingBlock:
+            state.thinkingBlock?._id === id
+              ? updatedThinkingBlock
+              : state.thinkingBlock,
+        })),
+    })
   },
-
-  // DELETE (SOFT DELETE)
 
   deleteThinkingBlock: async (id) => {
-    try {
-      set({
-        loading: true,
-        error: null,
-      })
+    return executeAction({
+      set,
+      action: () => deleteThinkingBlock(id),
+      onSuccess: () =>
+        set((state) => ({
+          thinkingBlocks: state.thinkingBlocks.filter(
+            (block) => block._id !== id,
+          ),
 
-      await deleteThinkingBlock(id)
-
-      set((state) => ({
-        thinkingBlocks: state.thinkingBlocks.filter(
-          (block) => block._id !== id
-        ),
-
-        thinkingBlock:
-          state.thinkingBlock?._id === id
-            ? null
-            : state.thinkingBlock,
-      }))
-    } catch (error) {
-      set({
-        error: error.message,
-      })
-
-      throw error
-    } finally {
-      set({
-        loading: false,
-      })
-    }
+          thinkingBlock:
+            state.thinkingBlock?._id === id ? null : state.thinkingBlock,
+        })),
+    })
   },
 
-  // DUPLICATE
-
   duplicateThinkingBlock: async (id) => {
-    try {
-      set({
-        loading: true,
-        error: null,
-      })
+    return executeAction({
+      set,
+      action: () => duplicateThinkingBlock(id),
+      onSuccess: (duplicatedBlock) =>
+        set((state) => ({
+          thinkingBlocks: [...state.thinkingBlocks, duplicatedBlock],
+        })),
+    })
+  },
 
-      const duplicatedBlock =
-        await duplicateThinkingBlock(id)
-
-      set((state) => ({
-        thinkingBlocks: [
-          ...state.thinkingBlocks,
-          duplicatedBlock,
-        ],
-      }))
-
-      return duplicatedBlock
-    } catch (error) {
-      set({
-        error: error.message,
-      })
-
-      throw error
-    } finally {
-      set({
-        loading: false,
-      })
-    }
+  openThinkingBlock: async (id) => {
+    return executeAction({
+      set,
+      action: () => openThinkingBlock(id),
+    })
   },
 }))

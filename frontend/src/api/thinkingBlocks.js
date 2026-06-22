@@ -1,55 +1,27 @@
-import api from "./axios"
+import {
+  apiGet,
+  apiPost,
+  apiPatch,
+  apiDelete,
+} from "./baseApi"
 
-export const getThinkingBlock = async (id) => {
-  const response = await api.get(`/thinking-blocks/${id}`)
-  return response.data.data
-}
+export const getThinkingBlock = (id) =>
+  apiGet(`/thinking-blocks/${id}`)
 
-export const getThinkingBlocksBySpaceBlock = async (
-  spaceBlockId
-) => {
-  const response = await api.get(
-    `/space-blocks/${spaceBlockId}/thinking-blocks`
-  )
+export const createThinkingBlock = (payload) =>
+  apiPost("/thinking-blocks", payload)
 
-  return response.data.data
-}
+export const updateThinkingBlock = (id, payload) =>
+  apiPatch(`/thinking-blocks/${id}`, payload)
 
-export const createThinkingBlock = async (payload) => {
-  const response = await api.post(
-    "/thinking-blocks",
-    payload
-  )
+export const deleteThinkingBlock = (id) =>
+  apiDelete(`/thinking-blocks/${id}`)
 
-  return response.data.data
-}
+export const duplicateThinkingBlock = (id) =>
+  apiPost(`/thinking-blocks/${id}/duplicate`)
 
-export const updateThinkingBlock = async (
-  id,
-  payload
-) => {
-  const response = await api.patch(
-    `/thinking-blocks/${id}`,
-    payload
-  )
+export const openThinkingBlock = (id) =>
+  apiPatch(`/thinking-blocks/${id}/open`)
 
-  return response.data.data
-}
-
-export const deleteThinkingBlock = async (id) => {
-  const response = await api.delete(
-    `/thinking-blocks/${id}`
-  )
-
-  return response.data.data
-}
-
-export const duplicateThinkingBlock = async (
-  id
-) => {
-  const response = await api.post(
-    `/thinking-blocks/${id}/duplicate`
-  )
-
-  return response.data.data
-}
+export const getThinkingBlocksBySpaceBlock = (id) =>
+  apiGet(`/space-blocks/${id}/thinking-blocks`)
